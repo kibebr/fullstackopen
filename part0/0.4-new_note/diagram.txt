@@ -1,0 +1,5 @@
+Q: What happens when the user submits a "New Note" form?
+
+In the previous example, when the user typed something in the form and submitted it, the server would fetch the new note's contenet via JSON from the browser and store in a database. Then, instead of putting the new note in the browser directly using the DOM, the server would reload the webpage, and then finally the new note would show up.
+
+However, most web applications don't work like that anymore: oftentimes, when the user submits something, the content travels to the server and the new content shows up instantly through DOM manipulation. It's more efficient: you won't have to reload the webpage and fetch everything over again just because you pressed a button. Imagine a really interactive webpage with several actions--you would have to reload for each little thing you do.
