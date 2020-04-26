@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 const Part = (props) => {
     return (
-            <li>Name: {props.part} - Exercises: {props.exercises}</li>
+            <li>Name: {props.name} - Exercises: {props.exercises}</li>
     )
 }
 
