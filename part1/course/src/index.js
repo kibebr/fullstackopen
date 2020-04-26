@@ -10,7 +10,7 @@ const Part = (props) => {
 const Header = (props) => {
     return (
         <div>
-            <h1>{props.course}</h1>
+            <h1>{props.name}</h1>
         </div>
     )
 }
@@ -24,28 +24,46 @@ const Content = (props) => {
 }
 
 const Total = (props) => {
-    let sum = 0;
-    props.content.forEach(part => sum += part.props.exercises);
-
     return (
         <div>
-            <p>Total: {sum}</p>
+            <p>Total: {props.numExercises}</p>
         </div>
     )
 }
 
-const App = () => {
-  const course = 'Half Stack application development'
-  const courseContent = [React.createElement(Part, {name: "Fundaments of React", exercises: 10}),
-                         React.createElement(Part, {name: "Using props to pass data", exercises: 7}),
-                         React.createElement(Part, {name: "State of a component", exercises: 14})];
-  return (
-    <div>
-      <Header course={course} />
-      <Content content={courseContent} />
-      <Total content={courseContent} />
-    </div>
-  )
+class Course
+{
+    constructor(name){
+        this.name = name;
+        this.header = this.generateHeader();
+        this.totalExercises = 0;
+        this.parts = []; // stores an array of React components
+    }
+
+    generateHeader(){
+        return React.createElement(Header, {name: this.name});
+    }
+
+    pushNewPart(name, exercises){
+        const newPart = React.createElement(Part, {name: name, exercises: exercises});
+        this.parts.push(newPart);
+        this.totalExercises += exercises;
+    }
 }
+
+const App = () => {
+    const course1 = new Course("Half Stack application development");
+    course1.pushNewPart("Fundamentals of React", 10);
+    course1.pushNewPart("Using props to pass data", 7);
+    course1.pushNewPart("State of a component", 14);
+
+    return (
+        <div>
+            {course1.header}
+            {course1.parts}
+            <Total numExercises={course1.totalExercises} />
+        </div>
+    )
+}   
 
 ReactDOM.render(<App />, document.getElementById('root'))
