@@ -15,14 +15,6 @@ const Header = (props) => {
     )
 }
 
-const Content = (props) => {
-    return (
-        <ul>
-            {props.content}
-        </ul>
-    )
-}
-
 const Total = (props) => {
     return (
         <div>
