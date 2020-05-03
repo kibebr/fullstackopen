@@ -84,7 +84,6 @@ const CountryList = ({countries, filter}) =>
 const App = () => 
 {
     const [countries, setCountries] = useState([]);
-    const [expandedCountry, setExpandedCountry] = useState(void 0);
     const [filterText, setFilterText] = useState('');
 
     useEffect(() => {
