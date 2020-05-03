@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-const Search = ({persons, filter}) =>
+const SearchBar = ({persons, filter}) =>
 {
-	const [name, setName] = useState(void 0);
-
 	function search(event){
 		event.preventDefault();
 		filter(event.target.value.toLowerCase());
@@ -21,7 +19,7 @@ const Search = ({persons, filter}) =>
 	)
 }
 
-const Persons = ({persons}) => 
+const PersonsList = ({persons}) => 
 {
 	function renderPersons(){
 		const elements = [];
@@ -51,7 +49,6 @@ const App = () =>
 	    { name: 'Mary Poppendieck', phone: '39-23-6423122', show:true }
 	]);
 
-
   	const [ formInfo, setNewFormInfo ] = useState({name: '', phone: ''});
 
 	function addPerson(event){
@@ -75,20 +72,20 @@ const App = () =>
     		setPersons((prev) => prev.map(person => ({...person, show:true})));
     	}
     	else{
-	    	const newobj = [];
+	    	const filtered = [];
 	    	persons.forEach(person => {
 	    		if(!person.name.toLowerCase().includes(nameToFilter))
-	    			newobj.push({...person, show:false});
+	    			filtered.push({...person, show:false});
 	    		else
-	    			newobj.push({...person});
+	    			filtered.push({...person});
 	    	});
-	    	setPersons(newobj);
+	    	setPersons(filtered);
     	}
     }
  
   	return (
 	    <div>
-	  		<Search persons={persons} filter={filter} />
+	  		<SearchBar filter={filter} />
 	      	<h2>Phonebook</h2>
 	      	<form onSubmit={addPerson}>
 	        	<div>
@@ -101,7 +98,7 @@ const App = () =>
 	        	</div>
 	      	</form>
 	      	<h2>Persons</h2>
-	      	<Persons persons={persons} />
+	      	<PersonsList persons={persons} />
 	    </div>
 	)
 }
