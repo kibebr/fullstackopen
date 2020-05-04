@@ -1,3 +1,5 @@
+export const JSON_SERVER_URL = "http://localhost:3001/persons";
+
 export function fetchFrom(url){
 	return new Promise(function(resolve, reject){
 		const request = new XMLHttpRequest();

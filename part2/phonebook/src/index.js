@@ -1,33 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import {fetchFrom} from "./utils.js";
+import {fetchFrom, JSON_SERVER_URL} from "./utils.js"
+import {putPersonInServer, removePersonFromServer} from './services/persons.js';
+import './index.css';
+const shortid = require('shortid');
 
-const SearchBar = ({persons, filter}) =>
+const SearchBar = ({filter}) =>
 {
-    function search(event){
-        event.preventDefault();
-        filter(event.target.value.toLowerCase());
-    }
-
-    return (
+    return(
         <div>
             <h1>Search</h1>
-            <form onSubmit={search}>
-                <input onChange={(event) => search(event)}/>
-                <button type="submit">Search</button>
-            </form>
+            <input onChange={(event) => filter(event.target.value.toLowerCase())}/>
         </div>
     )
 }
 
-const PersonsList = ({persons}) => 
+const PersonRow = ({person, deleteFunc}) =>
+{
+    return(
+        <React.Fragment>
+            <li key={person.id}>{person.name} -- phone: {person.phone}</li>
+            <button onClick={() => deleteFunc(person)}>delete</button>
+        </React.Fragment>
+    )
+}
+
+const PersonsList = ({persons, deleteFunc}) => 
 {
     function renderPersons(){
         const elements = [];
 
         persons.forEach(person => {
             if(person.show){
-                elements.push(<li>{person.name} -- his/her telephone number: {person.phone}</li>);
+                elements.push(<PersonRow person={person} deleteFunc={deleteFunc}/>);
             }
         });
 
@@ -41,33 +46,44 @@ const PersonsList = ({persons}) =>
     )
 }
 
-const App = () => 
+const PersonTable = ({sendMessage}) => 
 {
-    const [ persons, setPersons ] = useState([]);
-    const [ formInfo, setNewFormInfo ] = useState({name: '', phone: ''});
-
+    const [persons, setPersons] = useState([]);
+    const [formInfo, setNewFormInfo] = useState({name: '', phone: ''});
 
     useEffect(() => {
-        fetchFrom("http://localhost:3001/persons").then(initialPersons => {
+        fetchFrom(JSON_SERVER_URL).then(initialPersons => {
             setPersons(initialPersons);
-        })
+        });
     }, []);
 
     function addPerson(event){
         event.preventDefault();
 
-        let able = true;
+        if(persons.some(person => person.name === formInfo.name)){
+            return sendMessage("error", `${formInfo.name} is already added to the list!`);
+        }
+        else{       
+            const newPerson = {
+                id: shortid.generate(),
+                name: formInfo.name,
+                number: formInfo.phone,
+                show: true
+            }
 
-        persons.forEach(person => {
-            if(person.name == formInfo.name)
-                able = false;       
-        });
-
-        if(able)
-            setPersons(persons.concat({name:formInfo.name, phone:formInfo.phone, show:true}));
-        else
-            alert(`${formInfo.name} is already added to the list!`);
+            setPersons(persons.concat(newPerson));
+            putPersonInServer(newPerson);
+            sendMessage("success", `${newPerson.name} added!`);
+        }
      }
+
+    function deletePerson(person){
+        setPersons(persons.filter(currperson => currperson !== person));
+
+        removePersonFromServer(person.id);
+
+        sendMessage("success", `${person.name} removed!`);
+    }
 
     function filter(nameToFilter){
         if(nameToFilter === ''){
@@ -100,7 +116,39 @@ const App = () =>
                 </div>
             </form>
             <h2>Persons</h2>
-            <PersonsList persons={persons} />
+            <PersonsList persons={persons} deleteFunc={deletePerson}/>
+        </div>
+    )
+}
+
+const Message = ({type, content, deleteMessageFunc}) =>
+{
+    useEffect(() => {
+        setTimeout(() => {
+            deleteMessageFunc();
+        }, 10000);
+    });
+
+    if(type && content){
+        return(
+            <div className={`message message-${type}`}>
+                {content}
+            </div>
+        )
+    }
+    else{
+        return null;
+    }
+}
+
+const App = (props) =>
+{
+    const [message, setMessage] = useState({type: '', content: ''});
+
+    return(
+        <div>
+            <Message type={message.type} content={message.content} deleteMessageFunc={() => setMessage({type:'', content:''})}/>
+            <PersonTable sendMessage={(type, content) => setMessage({type: type, content: content})}/>
         </div>
     )
 }
