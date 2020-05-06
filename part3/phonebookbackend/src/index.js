@@ -83,11 +83,16 @@ const PersonTable = ({sendMessage}) =>
      }
 
     function deletePerson(person){
-        setPersons(persons.filter(currperson => currperson !== person));
 
-        removePersonFromServer(person.id);
+        removePersonFromServer(person.id)
+        .then(() => {
+            setPersons(persons.filter(currperson => currperson !== person));
+            sendMessage("success", `${person.name} removed!`);
+        })
+        .catch((err) => {
+            sendMessage("error", `${err}`);
+        });
 
-        sendMessage("success", `${person.name} removed!`);
     }
 
     function filter(nameToFilter){

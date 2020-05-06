@@ -22,7 +22,6 @@ export function putPersonInServer(personObj){
 }
 
 export function removePersonFromServer(personID){
-    console.log(personID);
     return new Promise(function (resolve, reject){
         const request = new XMLHttpRequest();
         request.open("DELETE", `${JSON_SERVER_URL}/${personID}`, true);
