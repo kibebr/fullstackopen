@@ -1,27 +1,36 @@
 const express = require('express');
 const shortid = require('shortid');
 const app = express();
+const morgan = require("morgan");
+const cors = require("cors");
+
 app.use(express.json());
+app.use(morgan("tiny")); 
+app.use(cors()); 
+app.use(express.static('build'));
 
 let persons = [
     {
         name: "Vitor Leal",
         number: "786",
-        id: 1
+        show: true,
+        id: shortid.generate()
     },
 
     {
         name: "David J. Malan",
         number: "450",
-        id: 2
+        show: true,
+        id: shortid.generate()
     },
 
     {
         name: "Donald J. Trump",
         number: "305",
-        id: 3
+        show: true,
+        id: shortid.generate()
     }
-]
+];
 
 app.get('/', (req, res) => 
 {
@@ -43,6 +52,7 @@ app.get("/api/persons", (req, res) =>
 
 app.post("/api/persons", (req, res) => 
 {
+    console.log(req.body);
     const body = req.body;
 
     if(!(body.name) || !(body.number)){
@@ -61,9 +71,10 @@ app.post("/api/persons", (req, res) =>
         }
 
         const newPerson = {
+            id: body.id,
             name: body.name,
             number: body.number,
-            id: shortid.generate()
+            show: body.show,
         };
 
         newarr[i] = newPerson;
@@ -90,7 +101,7 @@ app.delete("/api/persons/:id", (req, res) =>
     const id = req.params.id;
     
     persons = persons.filter(person => person.id != id);
-    
+    console.table(persons);
     res.status(204).end();
 });
 

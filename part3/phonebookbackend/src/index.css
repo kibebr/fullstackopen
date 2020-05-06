@@ -1,0 +1,19 @@
+html, body
+{
+    font-family: Arial;
+}
+
+.message
+{
+    border: 1px solid grey;
+}
+
+.message-success
+{
+    color: green;
+}
+
+.message-error
+{
+    color: red;
+}
