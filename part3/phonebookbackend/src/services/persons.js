@@ -12,8 +12,8 @@ export function putPersonInServer(personObj){
             if(request.status == 400)
                 throw new Error(JSON.parse(request.responseText)["error"]);
             else
-                resolve('SUCCESS');
-        }
+                resolve("SUCCESS");
+        };
 
         request.onerror = () => reject(() => Error("REQUEST POST NOT SENT"));
 
@@ -29,7 +29,7 @@ export function removePersonFromServer(personID){
         if(request.status == 404){
             reject(console.log("404"));
         }else{
-            resolve(console.log("REQUEST SUCCESSFUL"));
+            resolve("SUCCESS");
         }
 
         request.send(void 0);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import {fetchFrom, JSON_SERVER_URL} from "./utils.js"
+import {fetchFrom, JSON_SERVER_URL} from "./utils.js";
 import {putPersonInServer, removePersonFromServer} from './services/persons.js';
 import './index.css';
 
@@ -65,7 +65,6 @@ const PersonTable = ({sendMessage}) =>
         }
         else{       
             const newPerson = {
-                id: shortid.generate(),
                 name: formInfo.name,
                 number: formInfo.phone,
                 show: true
@@ -83,16 +82,12 @@ const PersonTable = ({sendMessage}) =>
      }
 
     function deletePerson(person){
-
         removePersonFromServer(person.id)
         .then(() => {
             setPersons(persons.filter(currperson => currperson !== person));
             sendMessage("success", `${person.name} removed!`);
         })
-        .catch((err) => {
-            sendMessage("error", `${err}`);
-        });
-
+        .catch(err => sendMessage("error", `${err}`));
     }
 
     function filter(nameToFilter){

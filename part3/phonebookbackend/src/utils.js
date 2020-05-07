@@ -1,4 +1,4 @@
-export const JSON_SERVER_URL = "/api/persons";
+export const JSON_SERVER_URL = "http://localhost:3001/api/persons";
 
 export function fetchFrom(url){
 	return new Promise(function(resolve, reject){
